@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -359,13 +361,13 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 15px;
     min-height: 500px;
     padding: 10px;
     overflow: hidden;
-    gap: 15px;
+    gap: 10px;
 }
 
         #avatarVideo {
@@ -373,10 +375,10 @@
     border-radius: 12px;
     background-color: #f8f9fa;
     width: 100%;
-    height: auto;
+    height: calc(100vh - 300px);
     max-width: 100%;
-    max-height: 70vh;
-    min-height: 400px;
+    max-height: calc(100vh - 300px);
+    min-height: 450px;
     object-fit: contain;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     margin: 0 auto;
@@ -786,7 +788,7 @@
 .video-wrapper {
     position: relative;
     width: 100%;
-    max-width: 600px;
+    max-width: none;
     margin: 0 auto;
     background: #f8f9fa;
     border-radius: 12px;
@@ -795,11 +797,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 450px;
+    height: calc(100vh - 300px);
 }
 
 .video-wrapper video {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     object-fit: contain;
 }
@@ -924,40 +928,108 @@
                         </button>
                         
                         <!-- D-ID Configuration -->
-                        <div class="form-group" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                            <h3 style="margin-bottom: 15px; color: var(--text-primary); font-size: 1.1rem;">🎭 D-ID Avatar Settings</h3>
-                            
-                            <form style="margin: 0;" onsubmit="return false;">
-                                <input type="text" name="username" style="display: none;" autocomplete="username">
-                                <label for="didApiKey">D-ID API Key:</label>
-                                <input 
-                                    type="password" 
-                                    id="didApiKey" 
-                                    name="password"
-                                    placeholder="Enter your D-ID API key"
-                                    title="Get your API key from studio.d-id.com"
-                                    autocomplete="current-password"
-                                >
-                                <small style="display: block; margin-top: 5px; color: var(--text-secondary); font-size: 12px;">
-                                    Get your API key from <a href="https://studio.d-id.com" target="_blank">studio.d-id.com</a>
-                                </small>
-                                
-                                <button 
-                                    type="button"
-                                    class="btn-primary" 
-                                    onclick="initializeDID()" 
-                                    style="margin-top: 10px; width: 100%;"
-                                >
-                                    🚀 Initialize Avatar
-                                </button>
-                                <button 
-    type="button"
-    class="btn-danger" 
-    onclick="closeStreamConnection()" 
-    style="margin-top: 10px; width: 100%;"
->
-    🔌 Disconnect Stream
-</button>
+<div class="form-group" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+    <h3 style="margin-bottom: 15px; color: var(--text-primary); font-size: 1.1rem;">🎭 D-ID Streaming Avatar</h3>
+    
+    <form style="margin: 0;" onsubmit="return false;">
+        <input type="text" name="username" style="display: none;" autocomplete="username">
+        <label for="didApiKey">D-ID API Key:</label>
+        <input 
+            type="password" 
+            id="didApiKey" 
+            name="password"
+            placeholder="Enter your D-ID API key"
+            title="Get your API key from studio.d-id.com"
+            autocomplete="current-password"
+        >
+        <small style="display: block; margin-top: 5px; color: var(--text-secondary); font-size: 12px;">
+            Get your API key from <a href="https://studio.d-id.com" target="_blank">studio.d-id.com</a>
+        </small>
+        
+        <div class="form-group" style="margin-top: 15px;">
+            <label for="serviceType">Avatar Service:</label>
+            <select id="serviceType">
+                <option value="talks">Talks (Custom Image)</option>
+                <option value="clips">Clips (Preset Avatars)</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="imageUrlGroup">
+            <label for="sourceUrl">Source Image URL (for Talks):</label>
+            <input type="url" id="sourceUrl" placeholder="https://example.com/your-image.jpg">
+        </div>
+        
+        <div class="form-group" id="presenterGroup" style="display: none;">
+            <label for="presenterId">Presenter (for Clips):</label>
+            <select id="presenterId">
+                <option value="">Select presenter...</option>
+                <option value="wayne_20240711">Wayne (Recommended)</option>
+                <option value="amy-Aq6OmGZnMt">Amy (Professional)</option>
+                <option value="noelle">Noelle (Default)</option>
+                <option value="eric-2UHNp4HyMt">Eric (Casual)</option>
+                <option value="stacey-G6mPtqx8eS">Stacey (Friendly)</option>
+            </select>
+            <small style="display: block; margin-top: 5px; color: var(--text-secondary); font-size: 11px;">
+                Note: Some presenters may require specific API access levels
+            </small>
+        </div>
+
+        <!-- Enhanced Voice Selection Dropdown -->
+<div class="form-group" style="margin-top: 15px;">
+    <label for="voiceSelection">Voice Selection:</label>
+    <select id="voiceSelection">
+        <option value="">Auto (Gender-Based Matching)</option>
+        <!-- Female Voices -->
+        <optgroup label="Female Voices">
+            <option value="en-US-AriaNeural">Aria - Professional Female</option>
+            <option value="en-US-JennyNeural">Jenny - Conversational Female</option>
+            <option value="en-US-AmberNeural">Amber - Warm Female</option>
+            <option value="en-US-ElizabethNeural">Elizabeth - Mature Female</option>
+            <option value="en-US-MichelleNeural">Michelle - Young Female</option>
+        </optgroup>
+        <!-- Male Voices -->
+        <optgroup label="Male Voices">
+            <option value="en-US-GuyNeural">Guy - Casual Male</option>
+            <option value="en-US-DavisNeural">Davis - Professional Male</option>
+            <option value="en-US-ChristopherNeural">Christopher - Mature Male</option>
+            <option value="en-US-EricNeural">Eric - Young Male</option>
+            <option value="en-US-BrianNeural">Brian - Deep Male</option>
+        </optgroup>
+    </select>
+    <small style="color: var(--text-secondary); font-size: 11px; display: block; margin-top: 5px;">
+        Select a specific voice or use "Auto" for gender-based matching
+    </small>
+</div>
+        
+        <div class="form-group" style="margin-top: 15px;">
+            <label for="chunkSize">Text Chunk Size:</label>
+            <input type="number" id="chunkSize" value="200" min="50" max="500">
+            <small style="color: var(--text-secondary); font-size: 11px;">
+                Smaller = more natural speech, larger = fewer API calls
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <input type="checkbox" id="streamingMode" checked style="width: auto; margin-right: 8px;">
+            <label for="streamingMode" style="display: inline;">Enable Streaming Mode</label>
+        </div>
+        
+        <button 
+            type="button"
+            class="btn-primary" 
+            onclick="initializeDID()" 
+            style="margin-top: 10px; width: 100%;"
+        >
+            🚀 Initialize Avatar
+        </button>
+        <button 
+            type="button"
+            class="btn-danger" 
+            onclick="closeStreamConnection()" 
+            style="margin-top: 10px; width: 100%;"
+        >
+            🔌 Disconnect Stream
+        </button>
                             </form>
                         </div>
                     </div>
@@ -1053,24 +1125,24 @@
                     <!-- D-ID Avatar Video Container -->
 <div class="avatar-container" id="avatarContainer">
     <div class="video-wrapper">
-        <video 
-            id="avatarVideo" 
-            width="100%" 
-            height="auto"
-            autoplay 
-            controls
-            style="
-    border-radius: 12px; 
-    background-color: #f0f0f0; 
-    max-height: 70vh;
-    min-height: 400px;
-    object-fit: contain;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: block;
-    margin: 0 auto;
+       <video 
+    id="avatarVideo" 
+    width="100%" 
+    height="100%"
+    autoplay 
+    controls
+    style="
+border-radius: 12px; 
+background-color: #f0f0f0; 
+width: 100%;
+height: 100%;
+object-fit: contain;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+display: block;
+margin: 0 auto;
 "
-        >
-        </video>
+>
+</video>
     </div>
     <div id="avatarStatus" class="avatar-status">
     </div>
@@ -1138,6 +1210,7 @@
         let conversationHistory = [];     // Store all messages in the conversation
         let sheetData = [];              // Store data loaded from Google Sheets
         let sessionId = '';              // Unique session identifier for this training session
+        let currentVoiceMethod = 'text'; // Add this line
 
 // ===== D-ID STREAMING GLOBAL VARIABLES =====
 let didApiKey = '';               // D-ID API key
@@ -1148,6 +1221,13 @@ let avatarVideo = null;           // Video element reference
 let isAvatarInitialized = false;  // Track initialization status
 let isStreamConnected = false;    // Track streaming connection status
 let defaultPresenterUrl = 'https://clips-presenters.d-id.com/amy/image.png'; // Default avatar
+
+        // ===== D-ID AVATAR CONFIGURATION VARIABLES =====
+let serviceType = 'talks';        // Service type (talks or clips)
+let sourceUrl = '';               // Source image URL for talks
+let presenterId = '';             // Presenter ID for clips  
+let chunkSize = 200;              // Text chunk size for streaming
+let streamingMode = true;         // Enable streaming mode
 
         // ===== SPEECH RECOGNITION VARIABLES =====
 let recognition = null;           // Speech recognition object
@@ -1162,6 +1242,47 @@ let forceStopRecognition = false; // Flag to force stop recognition
         let deepgramSocket = null; // WebSocket connection to Deepgram
         let mediaRecorder = null; // MediaRecorder for Deepgram streaming
         let audioStream = null; // Audio stream from microphone
+
+        // ===== PRESENTER GENDER DATABASE =====
+// Database of presenter genders and characteristics for voice matching
+const presenterDatabase = {
+    // Female presenters
+    'amy-Aq6OmGZnMt': { gender: 'female', age: 'adult', voice: 'en-US-AriaNeural' },
+    'noelle': { gender: 'female', age: 'young', voice: 'en-US-JennyNeural' },
+    'stacey-G6mPtqx8eS': { gender: 'female', age: 'adult', voice: 'en-US-AmberNeural' },
+    'v2_public_Alyssa_NoHands_BlackShirt_Home@Mvn6Nalx90': { gender: 'female', age: 'young', voice: 'en-US-MichelleNeural' },
+    
+    // Male presenters
+    'wayne_20240711': { gender: 'male', age: 'adult', voice: 'en-US-DavisNeural' },
+    'eric-2UHNp4HyMt': { gender: 'male', age: 'young', voice: 'en-US-EricNeural' },
+    'v2_public_Adam@36wCtvjdAi': { gender: 'male', age: 'adult', voice: 'en-US-GuyNeural' },
+    'v2_public_Dylan_NoHands_GreyShirt_Home@n3_canoTl3': { gender: 'male', age: 'young', voice: 'en-US-EricNeural' },
+    
+    // Add more presenters as needed - format: 'presenter_id': { gender, age, voice }
+};
+
+// Function to get optimal voice for presenter
+function getPresenterVoice(presenterId) {
+    // Check if we have specific data for this presenter
+    if (presenterDatabase[presenterId]) {
+        return presenterDatabase[presenterId].voice;
+    }
+    
+    // Fallback: try to guess from presenter name/id
+    const lowerName = presenterId.toLowerCase();
+    if (lowerName.includes('female') || lowerName.includes('woman') || 
+        lowerName.includes('amy') || lowerName.includes('stacey') || 
+        lowerName.includes('alyssa') || lowerName.includes('noelle')) {
+        return 'en-US-AriaNeural'; // Default female voice
+    } else if (lowerName.includes('male') || lowerName.includes('man') || 
+               lowerName.includes('wayne') || lowerName.includes('eric') || 
+               lowerName.includes('adam') || lowerName.includes('dylan')) {
+        return 'en-US-DavisNeural'; // Default male voice
+    }
+    
+    // Ultimate fallback
+    return 'en-US-AriaNeural';
+}
         
         // ===== INITIALIZATION =====
         // This runs when the page loads
@@ -1185,8 +1306,11 @@ let forceStopRecognition = false; // Flag to force stop recognition
             // Initialize avatar video element reference
             avatarVideo = document.getElementById('avatarVideo');
             
-            // D-ID Streaming API is ready
+// D-ID Streaming API is ready
 updateAvatarStatus('D-ID Streaming ready - Enter API key to initialize', 'info');
+
+// Initialize D-ID streaming setup
+initializeDIDElements();
         };
         
         // ===== SESSION MANAGEMENT =====
@@ -1268,6 +1392,38 @@ function newSession() {
     
     // D-ID Streaming specific cleanup
 closeStreamConnection();
+
+// Reset avatar initialization state
+isAvatarInitialized = false;
+isStreamConnected = false;
+
+// Clear video source
+if (avatarVideo) {
+    avatarVideo.src = '';
+    avatarVideo.srcObject = null;
+}
+
+// Reset D-ID session variables (but keep API key)
+streamId = null;
+didSessionId = null;
+
+// Reset avatar status
+updateAvatarStatus('D-ID Streaming ready - Enter API key to initialize', 'info');
+
+// Reset service fields to default (talks) but preserve API key
+const currentApiKey = document.getElementById('didApiKey').value;
+document.getElementById('serviceType').value = 'talks';
+document.getElementById('sourceUrl').value = '';
+document.getElementById('presenterId').value = '';
+document.getElementById('chunkSize').value = '200';
+document.getElementById('streamingMode').checked = true;
+document.getElementById('voiceSelection').value = '';
+
+// Force update service fields display
+updateServiceFields();
+
+// Restore API key
+document.getElementById('didApiKey').value = currentApiKey;
     
     // Update session info display
     updateSessionInfo();
@@ -1310,17 +1466,138 @@ function updateSessionInfo() {
         // Set up various UI interactions
         
        function setupEventListeners() {
-            // Save configuration when changed
-            document.getElementById('webhookUrl').addEventListener('change', saveConfig);
-            document.getElementById('submitWebhookUrl').addEventListener('change', saveConfig);
-            document.getElementById('sheetId').addEventListener('change', saveConfig);
-            document.getElementById('didApiKey').addEventListener('change', saveConfig);
-            
-            // Add new Deepgram listeners
-            document.getElementById('deepgramApiKey').addEventListener('change', saveConfig);
-            document.getElementById('deepgramModel').addEventListener('change', saveConfig);
-            document.getElementById('deepgramLanguage').addEventListener('change', saveConfig);
+    // Save configuration when changed
+    document.getElementById('webhookUrl').addEventListener('change', saveConfig);
+    document.getElementById('submitWebhookUrl').addEventListener('change', saveConfig);
+    document.getElementById('sheetId').addEventListener('change', saveConfig);
+    document.getElementById('didApiKey').addEventListener('change', saveConfig);
+    
+    // Avatar configuration event listeners
+    document.getElementById('serviceType').addEventListener('change', function() {
+        updateServiceFields();
+        saveConfig();
+    });
+    document.getElementById('sourceUrl').addEventListener('change', saveConfig);
+    document.getElementById('presenterId').addEventListener('change', saveConfig);
+    document.getElementById('chunkSize').addEventListener('change', saveConfig);
+    document.getElementById('streamingMode').addEventListener('change', saveConfig);
+    
+    // Add new Deepgram listeners
+    document.getElementById('deepgramApiKey').addEventListener('change', saveConfig);
+    document.getElementById('deepgramModel').addEventListener('change', saveConfig);
+    document.getElementById('deepgramLanguage').addEventListener('change', saveConfig);
+    document.getElementById('voiceSelection').addEventListener('change', saveConfig);  // Add this line
+
+    
+}
+
+        // ===== AVATAR CONFIGURATION FUNCTIONS =====
+
+// Initialize D-ID elements and set up event listeners
+function initializeDIDElements() {
+    console.log('Initializing D-ID elements...');
+    
+    // DON'T replace the element - just ensure event listeners are properly set
+    const serviceSelect = document.getElementById('serviceType');
+    
+    // Force update service fields based on current selection
+    setTimeout(() => {
+        console.log('Current service type on init:', serviceSelect.value);
+        updateServiceFields();
+    }, 50);
+    
+    // Add refresh button if clips is already selected
+    if (serviceSelect.value === 'clips') {
+        setTimeout(addPresenterRefreshButton, 100);
+    }
+}
+
+// Toggle between Talks (custom image) and Clips (preset avatars) service
+function updateServiceFields() {
+    const serviceTypeSelect = document.getElementById('serviceType');
+    const serviceTypeValue = serviceTypeSelect.value;
+    const imageUrlGroup = document.getElementById('imageUrlGroup');
+    const presenterGroup = document.getElementById('presenterGroup');
+    
+    console.log('=== updateServiceFields DEBUG ===');
+    console.log('Service type value:', serviceTypeValue);
+    console.log('Image URL group display:', imageUrlGroup ? imageUrlGroup.style.display : 'NOT FOUND');
+    console.log('Presenter group display:', presenterGroup ? presenterGroup.style.display : 'NOT FOUND');
+    
+    if (serviceTypeValue === 'talks') {
+        // Show custom image URL field, hide presenter selection
+        if (imageUrlGroup) {
+            imageUrlGroup.style.display = 'block';
+            console.log('✅ Set imageUrlGroup to block');
         }
+        if (presenterGroup) {
+            presenterGroup.style.display = 'none';
+            console.log('✅ Set presenterGroup to none');
+        }
+        console.log('Switched to Talks mode - showing URL field');
+    } else if (serviceTypeValue === 'clips') {
+        // Show presenter selection, hide custom image URL field
+        if (imageUrlGroup) {
+            imageUrlGroup.style.display = 'none';
+            console.log('✅ Set imageUrlGroup to none');
+        }
+        if (presenterGroup) {
+            presenterGroup.style.display = 'block';
+            console.log('✅ Set presenterGroup to block');
+        }
+        console.log('Switched to Clips mode - showing presenter field');
+        
+        // Add refresh button if it doesn't exist
+        setTimeout(addPresenterRefreshButton, 100);
+    }
+    
+    // Update global serviceType variable
+    serviceType = serviceTypeValue;
+    
+    // Save configuration
+    saveConfig();
+    
+    console.log('=== updateServiceFields COMPLETE ===');
+}
+
+// FIXED: Correct Avatar Configuration Reading
+function getAvatarConfiguration() {
+    const config = {
+        didApiKey: document.getElementById('didApiKey').value.trim(),
+        serviceType: document.getElementById('serviceType').value,
+        sourceUrl: document.getElementById('sourceUrl').value.trim(),
+        presenterId: document.getElementById('presenterId').value,
+        chunkSize: parseInt(document.getElementById('chunkSize').value),
+        streamingMode: document.getElementById('streamingMode').checked
+    };
+    
+    console.log('Current avatar configuration:', config);
+    return config;
+}
+
+// Text chunking function for streaming
+function splitTextIntoChunks(text, chunkSize) {
+    const sentences = text.match(/[^\.!?]+[\.!?]+/g) || [text];
+    const chunks = [];
+    let currentChunk = '';
+    
+    for (const sentence of sentences) {
+        if (currentChunk.length + sentence.length <= chunkSize) {
+            currentChunk += sentence;
+        } else {
+            if (currentChunk) {
+                chunks.push(currentChunk.trim());
+            }
+            currentChunk = sentence;
+        }
+    }
+    
+    if (currentChunk) {
+        chunks.push(currentChunk.trim());
+    }
+    
+    return chunks.filter(chunk => chunk.length > 0);
+}
         
         // ===== SPEECH RECOGNITION SETUP =====
         // Configure the browser's speech recognition API
@@ -1593,6 +1870,27 @@ function updateSessionInfo() {
             
             console.log('STT provider changed to:', provider);
         }
+
+        // ===== VOICE METHOD SELECTION =====
+function selectVoiceMethod(method) {
+    currentVoiceMethod = method;
+    
+    // Update UI
+    document.getElementById('textInputBtn').classList.toggle('active', method === 'text');
+    document.getElementById('audioUrlBtn').classList.toggle('active', method === 'audio');
+    
+    // Show/hide configurations
+    const microsoftConfig = document.getElementById('microsoftVoiceConfig');
+    const customConfig = document.getElementById('customAudioConfig');
+    
+    if (microsoftConfig) microsoftConfig.style.display = method === 'text' ? 'block' : 'none';
+    if (customConfig) customConfig.style.display = method === 'audio' ? 'block' : 'none';
+    
+    // Save preference
+    saveConfig();
+    
+    console.log('Voice method changed to:', method);
+}
 
         // ===== DEEPGRAM INTEGRATION =====
         function initializeDeepgramSocket() {
@@ -1884,6 +2182,21 @@ document.getElementById('reviewTranscript').value = '';
         
         console.log('D-ID Streaming API initialized successfully');
         isAvatarInitialized = true;
+        
+        // NEW: Test permissions and fetch presenters
+        try {
+            updateAvatarStatus('Testing API permissions...', 'loading');
+            await testDIDPermissions();
+            
+            if (serviceType === 'clips') {
+                updateAvatarStatus('Fetching available presenters...', 'loading');
+                await fetchAvailablePresenters();
+            }
+        } catch (testError) {
+            console.warn('Permission/presenter testing failed:', testError);
+            // Continue anyway - don't fail initialization
+        }
+        
         updateAvatarStatus('Avatar ready - Click "Connect Stream" to start', 'info');
         
         // Show connect button instead of auto-connecting
@@ -1919,7 +2232,7 @@ function showConnectButton() {
     connectBtn.style.display = 'block';
 }
 
-// Connect to D-ID streaming
+// FIXED: Correct Stream Connection with Proper Service Detection
 async function connectStream() {
     if (peerConnection && peerConnection.connectionState === 'connected') {
         console.log('Stream already connected');
@@ -1929,33 +2242,79 @@ async function connectStream() {
     try {
         updateAvatarStatus('Connecting to D-ID stream...', 'loading');
         
+        // FIXED: Get FRESH configuration values from form
+        const config = getAvatarConfiguration();
+        didApiKey = config.didApiKey;
+        
+        console.log('Using service type:', config.serviceType);
+        console.log('Using presenter ID:', config.presenterId);
+        console.log('Using source URL:', config.sourceUrl);
+        
+        // Prepare request payload based on service type
+        let payload = {
+            stream_warmup: true
+        };
+        
+        let streamUrl = '';
+        
+        if (config.serviceType === 'talks') {
+            if (!config.sourceUrl) {
+                throw new Error('Source image URL is required for talks service');
+            }
+            payload.source_url = config.sourceUrl;
+            streamUrl = 'https://api.d-id.com/talks/streams';
+            console.log('Talks payload:', payload);
+            
+        } else if (config.serviceType === 'clips') {
+            if (!config.presenterId) {
+                throw new Error('Presenter selection is required for clips service');
+            }
+            
+            // FIXED: Correct payload structure for Clips API
+            payload.presenter_id = config.presenterId;
+            
+            // Try to get a driver for this presenter
+            const driverId = await getPresenterDrivers(config.presenterId);
+            if (driverId) {
+                payload.driver_id = driverId;
+            }
+            
+            streamUrl = 'https://api.d-id.com/clips/streams';
+            console.log('Clips payload:', payload);
+        } else {
+            throw new Error('Invalid service type selected');
+        }
+        
         // Step 1: Create a new stream
-        const sessionResponse = await fetch('https://api.d-id.com/talks/streams', {
+        console.log('Creating stream at URL:', streamUrl);
+        
+        const sessionResponse = await fetch(streamUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${didApiKey}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                source_url: defaultPresenterUrl
-            }),
+            body: JSON.stringify(payload),
         });
         
         if (!sessionResponse.ok) {
-            throw new Error(`Failed to create stream: ${sessionResponse.status}`);
+            const errorText = await sessionResponse.text();
+            console.error('Stream creation error:', errorText);
+            throw new Error(`Failed to create stream: ${sessionResponse.status} - ${errorText}`);
         }
         
         const { id: newStreamId, offer, ice_servers: iceServers, session_id: newSessionId } = await sessionResponse.json();
         streamId = newStreamId;
         didSessionId = newSessionId;
         
-        console.log('Stream created:', { streamId, didSessionId });
+        console.log('Stream created successfully:', { streamId, didSessionId, serviceType: config.serviceType });
         
         // Step 2: Create peer connection and set up WebRTC
         const sessionClientAnswer = await createPeerConnection(offer, iceServers);
         
         // Step 3: Send SDP answer
-        const sdpResponse = await fetch(`https://api.d-id.com/talks/streams/${streamId}/sdp`, {
+        const sdpUrl = `${streamUrl}/${streamId}/sdp`;
+        const sdpResponse = await fetch(sdpUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${didApiKey}`,
@@ -1968,11 +2327,13 @@ async function connectStream() {
         });
         
         if (!sdpResponse.ok) {
-            throw new Error(`Failed to send SDP answer: ${sdpResponse.status}`);
+            const errorText = await sdpResponse.text();
+            console.error('SDP error:', errorText);
+            throw new Error(`Failed to send SDP answer: ${sdpResponse.status} - ${errorText}`);
         }
         
         console.log('SDP answer sent successfully');
-        updateAvatarStatus('Stream connected - Ready for speech', 'success');
+        updateAvatarStatus(`${config.serviceType.toUpperCase()} stream connected - Ready for speech`, 'success');
         
         // Hide connect button
         const connectBtn = document.getElementById('streamConnectBtn');
@@ -1983,7 +2344,7 @@ async function connectStream() {
         updateAvatarStatus(`Connection error: ${error.message}`, 'error');
         closeStreamConnection();
     }
-}
+}     
 
 // Create WebRTC peer connection
 async function createPeerConnection(offer, iceServers) {
@@ -2023,7 +2384,8 @@ function onIceCandidate(event) {
     if (event.candidate && streamId && didSessionId) {
         const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
         
-        fetch(`https://api.d-id.com/talks/streams/${streamId}/ice`, {
+        const currentServiceType = document.getElementById('serviceType').value;
+fetch(`https://api.d-id.com/${currentServiceType}/streams/${streamId}/ice`, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${didApiKey}`,
@@ -2085,9 +2447,11 @@ function setVideoElement(stream) {
     }
 }
 
-// Close streaming connection
+// FIXED: Close streaming connection with proper service type handling
 function closeStreamConnection() {
-    console.log('Closing stream connection');
+    // Get current service type
+    const currentServiceType = document.getElementById('serviceType').value || 'talks';
+    console.log('Closing stream connection for service type:', currentServiceType);
     
     if (avatarVideo && avatarVideo.srcObject) {
         avatarVideo.srcObject.getTracks().forEach(track => track.stop());
@@ -2113,7 +2477,8 @@ function closeStreamConnection() {
     
     // Delete stream on server if we have IDs
     if (streamId && didSessionId) {
-        fetch(`https://api.d-id.com/talks/streams/${streamId}`, {
+        const deleteUrl = `https://api.d-id.com/${currentServiceType}/streams/${streamId}`;
+        fetch(deleteUrl, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Basic ${didApiKey}`,
@@ -2127,7 +2492,7 @@ function closeStreamConnection() {
     
     streamId = null;
     didSessionId = null;
-}  
+} 
         
         // Test D-ID API connection
         async function testDIDConnection() {
@@ -2154,7 +2519,8 @@ function closeStreamConnection() {
         // ===== D-ID AVATAR SPEECH FUNCTIONS =====
         // Generate and play avatar speech
 
-        async function speakWithAvatar(text) {
+        // FIXED: Speech Function with Proper Voice Handling
+async function speakWithAvatar(text) {
     if (!isAvatarInitialized || !didApiKey) {
         console.log('Avatar not initialized, skipping speech');
         return;
@@ -2176,34 +2542,85 @@ function closeStreamConnection() {
 
     try {
         console.log('Sending text to D-ID stream:', text);
+        
+        // FIXED: Get FRESH configuration for each speech request
+        const config = getAvatarConfiguration();
+        console.log('Using service type for speech:', config.serviceType);
         updateAvatarStatus('Generating speech...', 'loading');
 
-        // Create talk stream with text
-        const talkResponse = await fetch(`https://api.d-id.com/talks/streams/${streamId}`, {
+       
+        // Enhanced Voice Selection Logic
+let voiceConfig = {
+    type: 'microsoft',
+    voice_id: 'en-US-AriaNeural' // Default voice
+};
+
+// Check if user has manually selected a specific voice
+const manualVoiceSelection = document.getElementById('voiceSelection').value;
+
+if (manualVoiceSelection) {
+    // User has manually selected a voice - use it
+    voiceConfig.voice_id = manualVoiceSelection;
+    console.log('Using manually selected voice:', manualVoiceSelection);
+    
+} else {
+    // Auto voice selection based on service type and presenter
+    if (config.serviceType === 'clips' && config.presenterId) {
+        // Use the presenter database for voice matching
+        const optimalVoice = getPresenterVoice(config.presenterId);
+        voiceConfig.voice_id = optimalVoice;
+        
+        console.log('Auto-selected voice for presenter:', config.presenterId, '->', optimalVoice);
+        
+        // Log presenter info if available
+        if (presenterDatabase[config.presenterId]) {
+            const presenterInfo = presenterDatabase[config.presenterId];
+            console.log('Presenter details:', presenterInfo);
+        }
+        
+    } else if (config.serviceType === 'talks') {
+        // For talks with custom image, try to determine gender from image or use default
+        voiceConfig.voice_id = 'en-US-AriaNeural'; // Default professional female voice
+        console.log('Using default voice for talks service');
+    }
+}
+
+console.log('Final voice configuration:', voiceConfig);
+
+        // Prepare the script payload
+        let scriptPayload = {
+            script: {
+                type: 'text',
+                input: text,
+                provider: voiceConfig
+            },
+            config: {
+                stitch: true,
+            },
+            session_id: didSessionId
+        };
+
+        // Add driver URL only for talks service
+        if (config.serviceType === 'talks') {
+            scriptPayload.driver_url = 'bank://lively/';
+        }
+
+        console.log('Script payload:', scriptPayload);
+
+        // FIXED: Use correct endpoint based on service type
+        const talkUrl = `https://api.d-id.com/${config.serviceType}/streams/${streamId}`;
+        const talkResponse = await fetch(talkUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${didApiKey}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                script: {
-                    type: 'text',
-                    input: text,
-                    provider: {
-                        type: 'microsoft',
-                        voice_id: 'Sara'
-                    }
-                },
-                driver_url: 'bank://lively/',
-                config: {
-                    stitch: true,
-                },
-                session_id: didSessionId
-            }),
+            body: JSON.stringify(scriptPayload),
         });
 
         if (!talkResponse.ok) {
             const errorText = await talkResponse.text();
+            console.error('Talk stream error:', errorText);
             throw new Error(`Talk stream failed: ${talkResponse.status} - ${errorText}`);
         }
 
@@ -2214,7 +2631,7 @@ function closeStreamConnection() {
         // Monitor for video events to update status
         if (avatarVideo) {
             const handleVideoPlay = () => {
-                updateAvatarStatus('Avatar speaking...', 'playing');
+                updateAvatarStatus(`Avatar speaking (${config.serviceType})...`, 'playing');
                 avatarVideo.removeEventListener('play', handleVideoPlay);
             };
             
@@ -2238,6 +2655,30 @@ function closeStreamConnection() {
     }
 }
 
+        // NEW: Function to get available drivers for a presenter
+async function getPresenterDrivers(presenterId) {
+    try {
+        const response = await fetch(`https://api.d-id.com/clips/presenters/${presenterId}/drivers`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${didApiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const drivers = await response.json();
+            console.log('Available drivers for', presenterId, ':', drivers);
+            return drivers.length > 0 ? drivers[0].driver_id : null;
+        } else {
+            console.log('No drivers endpoint available or access denied');
+        }
+    } catch (error) {
+        console.error('Error fetching drivers:', error);
+    }
+    return null;
+}
+        
         // Create a new talk using D-ID REST API
         async function createTalk(text) {
             try {
@@ -2400,6 +2841,321 @@ function closeStreamConnection() {
                 statusElement.className = `avatar-status ${type}`;
             }
         }
+
+        // Update avatar status display
+        function updateAvatarStatus(message, type = 'info') {
+            const statusElement = document.getElementById('avatarStatus');
+            if (statusElement) {
+                statusElement.textContent = message;
+                statusElement.className = `avatar-status ${type}`;
+            }
+        }
+
+// ===== PRESENTER VERIFICATION AND API TESTING =====
+// INSERT THE NEW FUNCTIONS HERE
+
+// IMPROVED: Enhanced presenter fetching with better error handling
+async function fetchAvailablePresenters() {
+    const apiKey = document.getElementById('didApiKey').value;
+    
+    if (!apiKey) {
+        showStatus('Please enter D-ID API key first', 'error');
+        return;
+    }
+    
+    try {
+        showStatus('Fetching available presenters...', 'info');
+        
+        // Fetch presenters from D-ID API
+        const response = await fetch('https://api.d-id.com/clips/presenters?limit=100', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Available presenters:', data);
+        
+        // Update the presenter dropdown
+        const presenters = data.presenters || data;
+        updatePresenterDropdown(presenters);
+        
+        showStatus(`Found ${presenters.length} available presenters`, 'success');
+        
+    } catch (error) {
+        console.error('Error fetching presenters:', error);
+        showStatus(`Error fetching presenters: ${error.message}`, 'error');
+        
+        // Fallback to known working presenters
+        console.log('Using fallback presenter list');
+        const fallbackPresenters = [
+            { id: 'noelle', name: 'Noelle (Default)' },
+            { id: 'amy-Aq6OmGZnMt', name: 'Amy (Professional)' },
+            { id: 'eric-2UHNp4HyMt', name: 'Eric (Casual)' },
+            { id: 'stacey-G6mPtqx8eS', name: 'Stacey (Friendly)' },
+            { id: 'wayne_20240711', name: 'Wayne (Recommended)' }
+        ];
+        updatePresenterDropdown(fallbackPresenters);
+    }
+}
+
+// Function to update presenter dropdown with fetched data
+function updatePresenterDropdown(presenters) {
+    const select = document.getElementById('presenterId');
+    select.innerHTML = '<option value="">Select presenter...</option>';
+    
+    presenters.forEach(presenter => {
+        const option = document.createElement('option');
+        option.value = presenter.id || presenter.presenter_id;
+        option.textContent = presenter.name || `${presenter.id} (${presenter.gender || 'Unknown'})`;
+        select.appendChild(option);
+    });
+}
+
+// Add refresh button to presenter group
+function addPresenterRefreshButton() {
+    const presenterGroup = document.getElementById('presenterGroup');
+    
+    // Check if button already exists
+    if (document.getElementById('refreshPresentersBtn')) return;
+    
+    const refreshBtn = document.createElement('button');
+    refreshBtn.id = 'refreshPresentersBtn';
+    refreshBtn.type = 'button';
+    refreshBtn.className = 'btn-secondary';
+    refreshBtn.innerHTML = '🔄 Refresh Presenters';
+    refreshBtn.style.marginTop = '10px';
+    refreshBtn.style.width = '100%';
+    refreshBtn.onclick = fetchAvailablePresenters;
+    
+    presenterGroup.appendChild(refreshBtn);
+}
+
+// Enhanced API key testing with permissions check
+// Enhanced API key testing with correct permissions check
+async function testDIDPermissions() {
+    const apiKey = document.getElementById('didApiKey').value;
+    
+    if (!apiKey) {
+        showStatus('Please enter D-ID API key first', 'error');
+        return;
+    }
+    
+    updateAvatarStatus('Testing API permissions...', 'loading');
+    
+    const testResults = {
+        talks: false,
+        clips: false,
+        streams: false
+    };
+    
+    try {
+        // Test 1: Basic Talks API access
+        console.log('Testing Talks API...');
+        try {
+            const talksResponse = await fetch('https://api.d-id.com/talks', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Basic ${apiKey}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            testResults.talks = talksResponse.ok;
+            console.log('Talks API access:', testResults.talks ? 'OK' : `DENIED (${talksResponse.status})`);
+        } catch (error) {
+            console.log('Talks API error:', error.message);
+            testResults.talks = false;
+        }
+        
+        // Test 2: Basic Clips API access
+        console.log('Testing Clips API...');
+        try {
+            const clipsResponse = await fetch('https://api.d-id.com/clips', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Basic ${apiKey}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            testResults.clips = clipsResponse.ok;
+            console.log('Clips API access:', testResults.clips ? 'OK' : `DENIED (${clipsResponse.status})`);
+        } catch (error) {
+            console.log('Clips API error:', error.message);
+            testResults.clips = false;
+        }
+        
+        // Test 3: Streams API access - Test by trying to create a minimal stream
+        console.log('Testing Streams API (creating test stream)...');
+        try {
+            // Try creating a minimal talks stream first
+            const talksStreamResponse = await fetch('https://api.d-id.com/talks/streams', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    source_url: 'https://clips-presenters.d-id.com/amy/image.png',
+                    stream_warmup: true
+                })
+            });
+            
+            if (talksStreamResponse.ok) {
+                const streamData = await talksStreamResponse.json();
+                console.log('Talks Streams API: OK');
+                testResults.streams = true;
+                
+                // Clean up the test stream
+                setTimeout(() => {
+                    fetch(`https://api.d-id.com/talks/streams/${streamData.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Basic ${apiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ session_id: streamData.session_id })
+                    }).catch(err => console.log('Stream cleanup error:', err));
+                }, 1000);
+                
+            } else {
+                console.log('Talks Streams API: DENIED', talksStreamResponse.status);
+                
+                // If talks streams fail, try clips streams
+                const clipsStreamResponse = await fetch('https://api.d-id.com/clips/streams', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        presenter: {
+                            type: 'clip',
+                            clip_id: 'noelle'
+                        },
+                        stream_warmup: true
+                    })
+                });
+                
+                if (clipsStreamResponse.ok) {
+                    const streamData = await clipsStreamResponse.json();
+                    console.log('Clips Streams API: OK');
+                    testResults.streams = true;
+                    
+                    // Clean up the test stream
+                    setTimeout(() => {
+                        fetch(`https://api.d-id.com/clips/streams/${streamData.id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Basic ${apiKey}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ session_id: streamData.session_id })
+                        }).catch(err => console.log('Stream cleanup error:', err));
+                    }, 1000);
+                } else {
+                    console.log('Clips Streams API: DENIED', clipsStreamResponse.status);
+                    testResults.streams = false;
+                }
+            }
+            
+        } catch (error) {
+            console.log('Streams API error:', error.message);
+            testResults.streams = false;
+        }
+        
+        // Display results
+        displayPermissionResults(testResults);
+        
+    } catch (error) {
+        console.error('Permission testing error:', error);
+        updateAvatarStatus(`Permission test failed: ${error.message}`, 'error');
+    }
+}
+
+function displayPermissionResults(results) {
+    const permissions = [];
+    
+    if (results.talks) permissions.push('✅ Talks API');
+    else permissions.push('❌ Talks API (No access)');
+    
+    if (results.clips) permissions.push('✅ Clips API');
+    else permissions.push('❌ Clips API (No access)');
+    
+    if (results.streams) permissions.push('✅ Streams API');
+    else permissions.push('❌ Streams API (No access)');
+    
+    const message = `API Permissions:\n${permissions.join('\n')}`;
+    console.log(message);
+    
+    // Update UI
+    const hasAllPermissions = results.talks && results.clips && results.streams;
+    if (hasAllPermissions) {
+        updateAvatarStatus('All API permissions verified ✅', 'success');
+        showStatus('API key has full access to all services', 'success');
+    } else {
+        updateAvatarStatus('Permissions checked - see console for details', 'info');
+        
+        // Show specific missing permissions
+        const missing = [];
+        if (!results.talks) missing.push('Talks');
+        if (!results.clips) missing.push('Clips');
+        if (!results.streams) missing.push('Streams');
+        
+        if (missing.length > 0) {
+            console.warn(`Limited permissions for: ${missing.join(', ')}`);
+            showStatus(`Limited access: ${missing.join(', ')} - check D-ID plan`, 'error');
+        } else {
+            showStatus('All basic APIs accessible', 'success');
+        }
+    }
+    
+    // Update service availability in UI
+    updateServiceAvailability(results);
+}
+
+function updateServiceAvailability(results) {
+    const serviceSelect = document.getElementById('serviceType');
+    
+    // Reset options first
+    serviceSelect.innerHTML = `
+        <option value="talks">Talks (Custom Image)</option>
+        <option value="clips">Clips (Preset Avatars)</option>
+    `;
+    
+    const options = serviceSelect.options;
+    
+    // Disable unavailable services
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        if (option.value === 'talks' && (!results.talks || !results.streams)) {
+            option.disabled = true;
+            option.textContent += ' (Limited Access)';
+        } else if (option.value === 'clips' && (!results.clips || !results.streams)) {
+            option.disabled = true;
+            option.textContent += ' (Limited Access)';
+        }
+    }
+    
+    // Switch to available service if current selection is unavailable
+    const currentService = serviceSelect.value;
+    if ((currentService === 'talks' && (!results.talks || !results.streams)) || 
+        (currentService === 'clips' && (!results.clips || !results.streams))) {
+        
+        // Find an available service
+        if (results.talks && results.streams) {
+            serviceSelect.value = 'talks';
+        } else if (results.clips && results.streams) {
+            serviceSelect.value = 'clips';
+        }
+        updateServiceFields();
+    }
+}
 
 // ===== GOOGLE SHEETS INTEGRATION =====
         // Load sheet names from Google Sheets
@@ -3468,19 +4224,26 @@ document.addEventListener('keydown', function(event) {
 }
         
         function saveConfig() {
-            const config = {
-                webhookUrl: document.getElementById('webhookUrl').value,
-                submitWebhookUrl: document.getElementById('submitWebhookUrl').value,
-                sheetId: document.getElementById('sheetId').value,
-                sheetName: getSelectedSheetName(),
-                didApiKey: document.getElementById('didApiKey').value,
-                sttProvider: currentSttProvider,
-                deepgramApiKey: document.getElementById('deepgramApiKey').value,
-                deepgramModel: document.getElementById('deepgramModel').value,
-                deepgramLanguage: document.getElementById('deepgramLanguage').value
-            };
-            localStorage.setItem('pharmacyChatConfig', JSON.stringify(config));
-        }
+    const config = {
+        webhookUrl: document.getElementById('webhookUrl').value,
+        submitWebhookUrl: document.getElementById('submitWebhookUrl').value,
+        sheetId: document.getElementById('sheetId').value,
+        sheetName: getSelectedSheetName(),
+        didApiKey: document.getElementById('didApiKey').value,
+        // Avatar configuration options
+        serviceType: document.getElementById('serviceType').value,
+        sourceUrl: document.getElementById('sourceUrl').value,
+        presenterId: document.getElementById('presenterId').value,
+        chunkSize: document.getElementById('chunkSize').value,
+        streamingMode: document.getElementById('streamingMode').checked,
+        sttProvider: currentSttProvider,
+        deepgramApiKey: document.getElementById('deepgramApiKey').value,
+        deepgramModel: document.getElementById('deepgramModel').value,
+        deepgramLanguage: document.getElementById('deepgramLanguage').value,
+        voiceSelection: document.getElementById('voiceSelection').value  // Add this line
+    };
+    localStorage.setItem('pharmacyChatConfig', JSON.stringify(config));
+}
         
         function loadSavedConfig() {
             const saved = localStorage.getItem('pharmacyChatConfig');
@@ -3490,6 +4253,17 @@ document.addEventListener('keydown', function(event) {
                 document.getElementById('submitWebhookUrl').value = config.submitWebhookUrl || '';
                 document.getElementById('sheetId').value = config.sheetId || '';
                 document.getElementById('didApiKey').value = config.didApiKey || '';
+                // Load avatar configuration
+document.getElementById('serviceType').value = config.serviceType || 'talks';
+document.getElementById('sourceUrl').value = config.sourceUrl || '';
+document.getElementById('presenterId').value = config.presenterId || '';
+document.getElementById('chunkSize').value = config.chunkSize || 200;
+document.getElementById('streamingMode').checked = config.streamingMode !== false;
+
+// Force update service fields based on saved service type
+setTimeout(() => {
+    updateServiceFields();
+}, 100);
                 
                 // Try to set sheet name in dropdown
                 const sheetNameDropdown = document.getElementById('sheetName');
@@ -3515,6 +4289,10 @@ document.addEventListener('keydown', function(event) {
                 if (config.deepgramLanguage) {
                     document.getElementById('deepgramLanguage').value = config.deepgramLanguage;
                 }
+                // Load voice selection
+if (config.voiceSelection) {
+    document.getElementById('voiceSelection').value = config.voiceSelection;
+}
             }
         }
         // Select a random scenario
@@ -3538,6 +4316,8 @@ document.addEventListener('keydown', function(event) {
     </script>
 </body>
 </html>
+
+
 
 
 
